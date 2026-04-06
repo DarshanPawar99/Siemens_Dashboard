@@ -271,6 +271,70 @@ input#selected-date-input::-webkit-calendar-picker-indicator {
   padding-right: 32px;
 }
 
+/* ---------------------------------------------------------
+   Unmatched / Alternate Vendor Details (expandable section)
+--------------------------------------------------------- */
+.unmatched-vendor-wrapper {
+  padding: 20px 32px 0;
+}
+
+.unmatched-vendor-details {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.unmatched-vendor-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  outline: none;
+  transition: background var(--transition-fast);
+}
+
+.unmatched-vendor-summary::-webkit-details-marker { display: none; }
+
+.unmatched-vendor-summary:hover {
+  background: var(--bg-card-hover);
+}
+
+.unmatched-vendor-details[open] .unmatched-vendor-arrow {
+  transform: rotate(90deg);
+}
+
+.unmatched-vendor-arrow {
+  display: inline-block;
+  color: var(--text-accent);
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.unmatched-vendor-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-strong);
+  letter-spacing: 0.02em;
+}
+
+.unmatched-vendor-badge {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-input);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-pill);
+  padding: 2px 10px;
+}
+
+.unmatched-vendor-body {
+  border-top: 1px solid var(--border-soft);
+}
+
 .region-card-grid-wrapper {
   padding-top: 16px;
   padding-bottom: 16px;
