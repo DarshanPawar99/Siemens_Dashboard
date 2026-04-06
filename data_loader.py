@@ -302,3 +302,36 @@ def load_dashboard_data(file_path: str | Path = DATA_FILE_PATH) -> pd.DataFrame:
     except Exception as exc:
         logger.error("Failed to process data: %s", exc)
         return empty
+
+
+# -------------------------------------------------------------------
+# UNMATCHED VENDORS (in vendor sheet but not in client sheet)
+# -------------------------------------------------------------------
+def load_unmatched_vendor_rows(file_path: str | Path = DATA_FILE_PATH) -> list[dict]:
+    """Return vendor rows from the vendor sheet that have no matching
+    entry in the client sheet (i.e. not serving any mapped site)."""
+    try:
+        raw_vendor_df, raw_client_df = load_raw_workbook(file_path=file_path)
+    except Exception as exc:
+        logger.error("Failed to load workbook for unmatched vendors: %s", exc)
+        return []
+
+    try:
+        vendor_df = standardize_vendor_columns(raw_vendor_df)
+        vendor_df = clean_vendor_dataframe(vendor_df)
+        vendor_df = flag_alternative_vendors(vendor_df)
+
+        # Vendor IDs that appear in the client sheet
+        client_ids = set(
+            _normalize_vendor_id(raw_client_df["Unique Vendor ID"])
+        )
+
+        vendor_ids = _normalize_vendor_id(vendor_df[CANONICAL_VENDOR_ID])
+        unmatched = vendor_df[~vendor_ids.isin(client_ids)].copy()
+        unmatched = unmatched.sort_values([CANONICAL_REGION, CANONICAL_VENDOR])
+
+        logger.info("Unmatched vendors (not in client sheet): %s", len(unmatched))
+        return unmatched.to_dict("records")
+    except Exception as exc:
+        logger.error("Failed to compute unmatched vendors: %s", exc)
+        return []

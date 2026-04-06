@@ -38,6 +38,7 @@ from components import (
     build_kpi_section,
     build_region_card_grid,
     build_section_tabs,
+    build_unmatched_vendor_section,
 )
 from config import (
     APP_SUBTITLE,
@@ -46,7 +47,7 @@ from config import (
     DEFAULT_SELECTED_RISK,
     SECTION_TAB_LABEL,
 )
-from state import get_city_options, initial_rows
+from state import UNMATCHED_VENDOR_ROWS, get_city_options, initial_rows
 
 # ---------------------------------------------------------------------------
 # Derive initial UI state from pre-computed rows
@@ -215,6 +216,12 @@ def build_layout() -> html.Div:
                                 ],
                             ),
                         ],
+                    ),
+
+                    # Unmatched vendor pool (vendors in Siemens Vendor not in Siemens Client)
+                    html.Div(
+                        className="unmatched-vendor-wrapper",
+                        children=build_unmatched_vendor_section(UNMATCHED_VENDOR_ROWS),
                     ),
 
                     # LPG pivot

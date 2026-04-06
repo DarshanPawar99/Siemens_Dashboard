@@ -13,7 +13,7 @@ from typing import Any
 
 from config import DEFAULT_SELECTED_DATE
 from aggregations import enrich_dashboard_rows
-from data_loader import load_dashboard_data
+from data_loader import load_dashboard_data, load_unmatched_vendor_rows
 from logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -23,6 +23,9 @@ logger = setup_logger(__name__)
 # ---------------------------------------------------------------------------
 RAW_DF = load_dashboard_data()
 logger.info("Dashboard dataset loaded at startup with %s rows", len(RAW_DF))
+
+UNMATCHED_VENDOR_ROWS: list[dict] = load_unmatched_vendor_rows()
+logger.info("Unmatched vendor pool loaded: %s rows", len(UNMATCHED_VENDOR_ROWS))
 
 initial_rows: list[dict[str, Any]] = enrich_dashboard_rows(RAW_DF, DEFAULT_SELECTED_DATE)
 
