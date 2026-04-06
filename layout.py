@@ -217,12 +217,6 @@ def build_layout() -> html.Div:
                         ],
                     ),
 
-                    # Unmatched vendor pool (vendors in Siemens Vendor not in Siemens Client)
-                    html.Div(
-                        className="unmatched-vendor-wrapper",
-                        children=build_unmatched_vendor_section(UNMATCHED_VENDOR_ROWS),
-                    ),
-
                     # LPG pivot
                     html.Div(
                         id="pivot-section-wrapper",
@@ -250,6 +244,12 @@ def build_layout() -> html.Div:
                             combined_on=False,
                             toggle_btn_id={"type": "combined-toggle", "index": "alt"},
                         ),
+                    ),
+
+                    # Unmatched vendor pool (vendors in Siemens Vendor not in Siemens Client)
+                    html.Div(
+                        className="unmatched-vendor-wrapper",
+                        children=build_unmatched_vendor_section(UNMATCHED_VENDOR_ROWS),
                     ),
                 ],
             ),
