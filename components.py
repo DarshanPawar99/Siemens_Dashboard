@@ -533,7 +533,7 @@ def build_city_pivot_table(
                 className="pivot-group-row",
                 children=[
                     html.Td(
-                        colSpan=7,
+                        colSpan=9,
                         className="pivot-group-cell",
                         children=html.Div(
                             className="pivot-group-header",
@@ -577,6 +577,8 @@ def build_city_pivot_table(
                         html.Td(str(row.get("last_updated", "")), className="pivot-cell pivot-cell-dim"),
                         html.Td(_format_number(row.get("pax", 0)), className="pivot-cell"),
                         html.Td(_alternative_pill(bool(row.get("is_alternative", False))), className="pivot-cell"),
+                        html.Td(str(row.get("current_week_menu", "")) or "None", className="pivot-cell"),
+                        html.Td(str(row.get("next_week_menu", "")) or "None", className="pivot-cell"),
                     ],
                 )
             )
@@ -584,7 +586,7 @@ def build_city_pivot_table(
     if not table_rows:
         table_rows.append(
             html.Tr(children=[
-                html.Td("No records found for the selected filters.", colSpan=7, className="pivot-no-records")
+                html.Td("No records found for the selected filters.", colSpan=9, className="pivot-no-records")
             ])
         )
 
@@ -654,6 +656,8 @@ def build_city_pivot_table(
                                     html.Th("Last Updated", className="pivot-th"),
                                     html.Th("Pax", className="pivot-th"),
                                     html.Th("Alternative Available", className="pivot-th"),
+                                    html.Th("Current Week Menu", className="pivot-th"),
+                                    html.Th("Next Week Menu", className="pivot-th"),
                                 ])
                             ),
                             html.Tbody(table_rows),
@@ -694,7 +698,7 @@ def build_alt_pivot_table(
                 className="pivot-group-row",
                 children=[
                     html.Td(
-                        colSpan=6,
+                        colSpan=8,
                         className="pivot-group-cell",
                         children=html.Div(
                             className="pivot-group-header",
@@ -737,6 +741,8 @@ def build_alt_pivot_table(
                             html.Span(alt_type, className="alt-type-pill", style={"backgroundColor": type_color}),
                             className="pivot-cell",
                         ),
+                        html.Td(str(row.get("current_week_menu", "")) or "None", className="pivot-cell"),
+                        html.Td(str(row.get("next_week_menu", "")) or "None", className="pivot-cell"),
                     ],
                 )
             )
@@ -744,7 +750,7 @@ def build_alt_pivot_table(
     if not table_rows:
         table_rows.append(
             html.Tr(children=[
-                html.Td("No records found for the selected filters.", colSpan=6, className="pivot-no-records")
+                html.Td("No records found for the selected filters.", colSpan=8, className="pivot-no-records")
             ])
         )
 
@@ -814,6 +820,8 @@ def build_alt_pivot_table(
                                     html.Th("Last Updated", className="pivot-th"),
                                     html.Th("PAX", className="pivot-th"),
                                     html.Th("Coverage Type", className="pivot-th"),
+                                    html.Th("Current Week Menu", className="pivot-th"),
+                                    html.Th("Next Week Menu", className="pivot-th"),
                                 ])
                             ),
                             html.Tbody(table_rows),
@@ -856,7 +864,7 @@ def build_combined_pivot_table(
                 className="pivot-group-row",
                 children=[
                     html.Td(
-                        colSpan=7,
+                        colSpan=10,
                         className="pivot-group-cell",
                         children=html.Div(
                             className="pivot-group-header",
@@ -881,6 +889,7 @@ def build_combined_pivot_table(
             live_days_color = RISK_COLORS.get(risk, "#e2e8f0")
             is_alt = bool(row.get("is_alternative", False))
             alt_type = str(row.get("alt_type", ""))
+            city = str(row.get("region", ""))
 
             if is_alt:
                 source_cell = html.Td(
@@ -901,6 +910,7 @@ def build_combined_pivot_table(
                 html.Tr(
                     className="pivot-data-row",
                     children=[
+                        html.Td(city if idx == 0 else "", className="pivot-cell pivot-cell-dim"),
                         html.Td(client if idx == 0 else "", className="pivot-cell pivot-cell-dim"),
                         html.Td(str(row.get("vendor", "")), className="pivot-cell pivot-cell-strong"),
                         html.Td(_risk_pill(risk), className="pivot-cell"),
@@ -912,6 +922,8 @@ def build_combined_pivot_table(
                         html.Td(str(row.get("last_updated", "")), className="pivot-cell pivot-cell-dim"),
                         html.Td(_format_number(row.get("pax", 0)), className="pivot-cell"),
                         source_cell,
+                        html.Td(str(row.get("current_week_menu", "")) or "None", className="pivot-cell"),
+                        html.Td(str(row.get("next_week_menu", "")) or "None", className="pivot-cell"),
                     ],
                 )
             )
@@ -919,7 +931,7 @@ def build_combined_pivot_table(
     if not table_rows:
         table_rows.append(
             html.Tr(children=[
-                html.Td("No records found.", colSpan=7, className="pivot-no-records")
+                html.Td("No records found.", colSpan=10, className="pivot-no-records")
             ])
         )
 
@@ -974,6 +986,7 @@ def build_combined_pivot_table(
                         children=[
                             html.Thead(
                                 html.Tr(children=[
+                                    html.Th("City", className="pivot-th"),
                                     html.Th("Site", className="pivot-th"),
                                     html.Th("Vendor", className="pivot-th"),
                                     html.Th("Risk", className="pivot-th"),
@@ -981,6 +994,8 @@ def build_combined_pivot_table(
                                     html.Th("Last Updated", className="pivot-th"),
                                     html.Th("PAX", className="pivot-th"),
                                     html.Th("Source", className="pivot-th"),
+                                    html.Th("Current Week Menu", className="pivot-th"),
+                                    html.Th("Next Week Menu", className="pivot-th"),
                                 ])
                             ),
                             html.Tbody(table_rows),

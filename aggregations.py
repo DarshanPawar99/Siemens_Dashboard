@@ -114,6 +114,8 @@ def enrich_dashboard_rows(df: pd.DataFrame, selected_date: date) -> list[dict[st
                 "risk": risk,
                 "risk_level": get_risk_level(risk),
                 "risk_color": get_risk_color(risk),
+                "current_week_menu": str(row.get("current_week_menu", "")).strip(),
+                "next_week_menu": str(row.get("next_week_menu", "")).strip(),
             }
         )
 

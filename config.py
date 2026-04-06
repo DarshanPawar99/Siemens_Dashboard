@@ -123,6 +123,8 @@ CANONICAL_LAST_UPDATED = "last_updated"
 CANONICAL_GAIL_PNG = "gail_png"
 CANONICAL_CONTINUITY = "continuity"
 CANONICAL_IS_ALTERNATIVE = "is_alternative"
+CANONICAL_CURRENT_MENU = "current_week_menu"
+CANONICAL_NEXT_MENU = "next_week_menu"
 
 
 # -------------------------------------------------------------------
