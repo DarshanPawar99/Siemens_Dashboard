@@ -417,11 +417,11 @@ def build_alt_donut_data(enriched_rows: list[dict[str, Any]], selected_city: str
 # -------------------------------------------------------------------
 def build_combined_pivot_groups(
     enriched_rows: list[dict[str, Any]],
-    selected_city: str,
+    selected_city: str = "",
     search_text: str = "",
 ) -> list[dict[str, Any]]:
-    """All vendors (LPG + alternative) for a city, grouped by client."""
-    city_rows = [row for row in enriched_rows if row.get("region") == selected_city]
+    """All vendors (LPG + alternative) across all cities, grouped by client."""
+    city_rows = list(enriched_rows)
 
     if search_text:
         needle = search_text.strip().lower()
