@@ -23,10 +23,12 @@ import pandas as pd
 from config import (
     CANONICAL_CLIENT,
     CANONICAL_CONTINUITY,
+    CANONICAL_CURRENT_MENU,
     CANONICAL_DAYS_OF_STOCK,
     CANONICAL_GAIL_PNG,
     CANONICAL_IS_ALTERNATIVE,
     CANONICAL_LAST_UPDATED,
+    CANONICAL_NEXT_MENU,
     CANONICAL_PAX,
     CANONICAL_REGION,
     CANONICAL_VENDOR,
@@ -59,6 +61,12 @@ CLIENT_EXACT_COLUMNS = {
     CANONICAL_VENDOR: "Vendor Name",
     CANONICAL_CLIENT: "Site Name",
     CANONICAL_PAX: "Total Pax Served through SQ (Only Offsite)",
+}
+
+# Optional — loaded if present in the sheet, otherwise default to ""
+CLIENT_OPTIONAL_COLUMNS = {
+    CANONICAL_CURRENT_MENU: "Current Week Menu",
+    CANONICAL_NEXT_MENU: "Next Week Menu",
 }
 
 ALLOWED_SITE_NAMES = {"siemensrga", "siemenstech", "siemenspune"}
@@ -110,11 +118,17 @@ def standardize_client_columns(df: pd.DataFrame) -> pd.DataFrame:
 
     client_df = df.rename(columns={v: k for k, v in CLIENT_EXACT_COLUMNS.items()}).copy()
 
+    # Load optional columns if present, else fill with empty string
+    for canonical, excel_name in CLIENT_OPTIONAL_COLUMNS.items():
+        client_df[canonical] = df[excel_name].values if excel_name in df.columns else ""
+
     keep_cols = [
         CANONICAL_VENDOR_ID,
         CANONICAL_VENDOR,
         CANONICAL_CLIENT,
         CANONICAL_PAX,
+        CANONICAL_CURRENT_MENU,
+        CANONICAL_NEXT_MENU,
     ]
     return client_df[keep_cols].copy()
 
@@ -167,7 +181,7 @@ def clean_client_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
     cleaned[CANONICAL_VENDOR_ID] = _normalize_vendor_id(cleaned[CANONICAL_VENDOR_ID])
 
-    for col in [CANONICAL_VENDOR, CANONICAL_CLIENT]:
+    for col in [CANONICAL_VENDOR, CANONICAL_CLIENT, CANONICAL_CURRENT_MENU, CANONICAL_NEXT_MENU]:
         cleaned[col] = cleaned[col].astype("string").fillna("").str.strip()
 
     cleaned[CANONICAL_PAX] = pd.to_numeric(
@@ -254,6 +268,8 @@ def merge_client_vendor_data(client_df: pd.DataFrame, vendor_df: pd.DataFrame) -
         CANONICAL_GAIL_PNG,
         CANONICAL_CONTINUITY,
         CANONICAL_IS_ALTERNATIVE,
+        CANONICAL_CURRENT_MENU,
+        CANONICAL_NEXT_MENU,
     ]
 
     return merged[final_cols].reset_index(drop=True)
@@ -267,7 +283,7 @@ def load_dashboard_data(file_path: str | Path = DATA_FILE_PATH) -> pd.DataFrame:
         CANONICAL_VENDOR_ID, CANONICAL_VENDOR, CANONICAL_CLIENT,
         CANONICAL_REGION, CANONICAL_PAX, CANONICAL_DAYS_OF_STOCK,
         CANONICAL_LAST_UPDATED, CANONICAL_GAIL_PNG, CANONICAL_CONTINUITY,
-        CANONICAL_IS_ALTERNATIVE,
+        CANONICAL_IS_ALTERNATIVE, CANONICAL_CURRENT_MENU, CANONICAL_NEXT_MENU,
     ])
 
     try:
