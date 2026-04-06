@@ -100,7 +100,7 @@ def standardize_vendor_columns(df: pd.DataFrame) -> pd.DataFrame:
         CANONICAL_GAIL_PNG,
         CANONICAL_CONTINUITY,
     ]
-    return vendor_df[keep_cols]
+    return vendor_df[keep_cols].copy()
 
 
 def standardize_client_columns(df: pd.DataFrame) -> pd.DataFrame:
@@ -116,7 +116,7 @@ def standardize_client_columns(df: pd.DataFrame) -> pd.DataFrame:
         CANONICAL_CLIENT,
         CANONICAL_PAX,
     ]
-    return client_df[keep_cols]
+    return client_df[keep_cols].copy()
 
 
 # -------------------------------------------------------------------
@@ -236,12 +236,12 @@ def merge_client_vendor_data(client_df: pd.DataFrame, vendor_df: pd.DataFrame) -
         suffixes=("_client", "_vendor"),
     )
 
-    merged[CANONICAL_REGION] = merged[f"{CANONICAL_REGION}"]
+    merged = merged.copy()
 
     if f"{CANONICAL_VENDOR}_vendor" in merged.columns:
-        merged[CANONICAL_VENDOR] = merged[f"{CANONICAL_VENDOR}_vendor"]
+        merged.loc[:, CANONICAL_VENDOR] = merged[f"{CANONICAL_VENDOR}_vendor"]
     elif f"{CANONICAL_VENDOR}_client" in merged.columns:
-        merged[CANONICAL_VENDOR] = merged[f"{CANONICAL_VENDOR}_client"]
+        merged.loc[:, CANONICAL_VENDOR] = merged[f"{CANONICAL_VENDOR}_client"]
 
     final_cols = [
         CANONICAL_VENDOR_ID,
