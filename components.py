@@ -526,66 +526,95 @@ def build_alt_type_cards(type_summary: dict[str, Any], selected_type: str) -> li
 # -------------------------------------------------------------------
 # Unmatched vendor section (vendors in Siemens Vendor not in Siemens Client)
 # -------------------------------------------------------------------
+_UNMATCHED_COLS = 3  # Vendor Name | Days of Stock | Alternative Available
+
 def build_unmatched_vendor_section(rows: list[dict]) -> html.Details:
     count = len(rows)
+
+    # Group by city/region
+    city_map: dict[str, list[dict]] = {}
+    for row in rows:
+        city = str(row.get("region", "Unknown")).strip() or "Unknown"
+        city_map.setdefault(city, []).append(row)
+
     summary = html.Summary(
         className="unmatched-vendor-summary",
         children=[
             html.Span("▶", className="unmatched-vendor-arrow"),
             html.Span("Alternate Vendor Details", className="unmatched-vendor-title"),
             html.Span(
-                f"{count} vendor{'s' if count != 1 else ''} · not mapped to any site",
+                f"{len(city_map)} {'city' if len(city_map) == 1 else 'cities'} · {count} vendor{'s' if count != 1 else ''}",
                 className="unmatched-vendor-badge",
             ),
         ],
     )
 
     if not rows:
-        body = html.Div("No unmatched vendors found.", className="pivot-no-records")
+        body_children = [html.Div("No unmatched vendors found.", className="pivot-no-records")]
     else:
         thead = html.Thead(
             html.Tr([
-                html.Th("City / Region", className="pivot-th"),
-                html.Th("Vendor Name",   className="pivot-th"),
-                html.Th("Days of Stock", className="pivot-th"),
+                html.Th("Vendor Name",          className="pivot-th"),
+                html.Th("Days of Stock",        className="pivot-th"),
                 html.Th("Alternative Available", className="pivot-th"),
             ])
         )
+
         tbody_rows = []
-        for row in rows:
-            alt = bool(row.get("is_alternative", False))
-            days = row.get("days_of_stock", 0)
-            try:
-                days_str = str(int(float(days)))
-            except (ValueError, TypeError):
-                days_str = "—"
+        for city in sorted(city_map.keys()):
+            vendors = sorted(city_map[city], key=lambda r: str(r.get("vendor", "")))
+
+            # City header row
             tbody_rows.append(
                 html.Tr(
-                    className="pivot-data-row",
+                    className="pivot-city-row",
                     children=[
-                        html.Td(str(row.get("region", "—")),   className="pivot-cell"),
-                        html.Td(str(row.get("vendor", "—")),   className="pivot-cell pivot-cell-strong"),
-                        html.Td(days_str,                      className="pivot-cell"),
                         html.Td(
-                            html.Span(
-                                "Yes" if alt else "No",
-                                className=f"continuity-pill {'continuity-yes' if alt else 'continuity-no'}",
-                            ),
-                            className="pivot-cell",
-                        ),
+                            html.Span(city, className="pivot-city-title"),
+                            colSpan=_UNMATCHED_COLS,
+                            className="pivot-city-cell",
+                        )
                     ],
                 )
             )
-        body = html.Table(
-            className="pivot-table",
-            children=[thead, html.Tbody(tbody_rows)],
-        )
+
+            # Vendor rows under city
+            for row in vendors:
+                alt = bool(row.get("is_alternative", False))
+                days = row.get("days_of_stock", 0)
+                try:
+                    days_str = str(int(float(days)))
+                except (ValueError, TypeError):
+                    days_str = "—"
+                tbody_rows.append(
+                    html.Tr(
+                        className="pivot-data-row",
+                        children=[
+                            html.Td(str(row.get("vendor", "—")), className="pivot-cell pivot-cell-strong"),
+                            html.Td(days_str,                    className="pivot-cell"),
+                            html.Td(
+                                html.Span(
+                                    "Yes" if alt else "No",
+                                    className=f"continuity-pill {'continuity-yes' if alt else 'continuity-no'}",
+                                ),
+                                className="pivot-cell",
+                            ),
+                        ],
+                    )
+                )
+
+        body_children = [
+            html.Table(
+                className="pivot-table",
+                children=[thead, html.Tbody(tbody_rows)],
+            )
+        ]
 
     return html.Details(
         className="unmatched-vendor-details",
         children=[
             summary,
-            html.Div(className="unmatched-vendor-body", children=[body]),
+            html.Div(className="unmatched-vendor-body", children=body_children),
         ],
     )
 
