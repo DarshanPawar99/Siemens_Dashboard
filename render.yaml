@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: sq-lpg-dashboard
+    name: seimens-dashboard
     runtime: python
     plan: free
     rootDir: .
