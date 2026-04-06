@@ -113,36 +113,3 @@ def compare_risk(risk_a: str, risk_b: str) -> str:
     return risk_a if get_risk_level(risk_a) >= get_risk_level(risk_b) else risk_b
 
 
-def build_enriched_row(
-    raw_row: dict[str, Any],
-    selected_date: date,
-    row_id: int | None = None,
-) -> dict[str, Any] | None:
-    """
-    Convert one cleaned raw row into a dashboard-ready enriched row.
-    """
-    last_updated = as_date(raw_row.get("last_updated"))
-    if last_updated is None:
-        return None
-
-    days_of_stock = int(float(raw_row.get("days_of_stock", 0) or 0))
-    live_days = get_live_days(days_of_stock, last_updated, selected_date)
-    risk = get_risk_category(live_days)
-    consumed = working_days_between(last_updated, selected_date)
-
-    return {
-        "id": row_id,
-        "vendor": str(raw_row.get("vendor", "")).strip(),
-        "client": str(raw_row.get("client", "")).strip(),
-        "region": str(raw_row.get("region", "")).strip(),
-        "pax": float(raw_row.get("pax", 0) or 0),
-        "days_of_stock": days_of_stock,
-        "last_updated": last_updated.isoformat(),
-        "continuity": str(raw_row.get("continuity", "")).strip(),
-        "gail_png": str(raw_row.get("gail_png", "")).strip(),
-        "working_days_consumed": consumed,
-        "live_days": live_days,
-        "risk": risk,
-        "risk_level": get_risk_level(risk),
-        "risk_color": get_risk_color(risk),
-    }

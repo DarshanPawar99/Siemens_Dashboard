@@ -34,7 +34,7 @@ initial_rows: list[dict[str, Any]] = enrich_dashboard_rows(RAW_DF, DEFAULT_SELEC
 # Shared utility
 # ---------------------------------------------------------------------------
 def get_city_options(enriched_rows: list[dict[str, Any]]) -> list[str]:
-    """Return sorted list of cities from LPG rows only."""
+    """Return sorted list of regions from LPG rows only."""
     lpg = [r for r in enriched_rows if not r.get("is_alternative", False)]
     cities = {str(row["region"]).strip() for row in lpg if row.get("region")}
     return sorted(cities)

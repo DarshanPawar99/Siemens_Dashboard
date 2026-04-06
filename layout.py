@@ -83,7 +83,6 @@ def build_layout() -> html.Div:
             dcc.Store(id="store-selected-city", data=_initial_city),
             dcc.Store(id="store-selected-risk", data=DEFAULT_SELECTED_RISK),
             dcc.Store(id="store-search-text", data=""),
-            dcc.Store(id="store-city-options", data=_initial_cities),
             # ---- stores: alt view ----
             dcc.Store(id="store-alt-view-open", data=False),
             dcc.Store(id="store-alt-selected-type", data=""),

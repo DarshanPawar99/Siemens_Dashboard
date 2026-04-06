@@ -179,9 +179,9 @@ def build_client_worst_risk_summary(enriched_rows: list[dict[str, Any]]) -> dict
     counts = _count_by_risk(clients)
 
     return {
-        "title": "Sites Under only LPG",
+        "title": "Sites with LPG Supply",
         "value": len(clients),
-        "subtitle": "Poor LPG vendor risk mapped per site",
+        "subtitle": "Sites mapped to at least one LPG vendor",
         **counts,
     }
 

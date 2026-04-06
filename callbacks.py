@@ -79,7 +79,6 @@ def _collect_kpi_summaries(enriched_rows: list[dict[str, Any]]) -> dict[str, Any
 
 @callback(
     Output("store-enriched-rows", "data"),
-    Output("store-city-options", "data"),
     Output("store-selected-city", "data"),
     Output("store-selected-risk", "data"),
     Input("selected-date-input", "value"),
@@ -88,7 +87,7 @@ def _collect_kpi_summaries(enriched_rows: list[dict[str, Any]]) -> dict[str, Any
 def refresh_dashboard_for_date(
     selected_date_str: str | None,
     current_city: str | None,
-) -> tuple[list[dict[str, Any]], list[str], str, str]:
+) -> tuple[list[dict[str, Any]], str, str]:
     logger.info("Refreshing dashboard for selected date: %s", selected_date_str)
     selected_date = date.fromisoformat(selected_date_str) if selected_date_str else DEFAULT_SELECTED_DATE
     enriched_rows = enrich_dashboard_rows(RAW_DF, selected_date)
@@ -100,7 +99,7 @@ def refresh_dashboard_for_date(
         else (city_options[0] if city_options else "")
     )
 
-    return enriched_rows, city_options, city_value, ""
+    return enriched_rows, city_value, ""
 
 
 # ==========================================================================
