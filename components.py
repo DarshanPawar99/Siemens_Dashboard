@@ -142,6 +142,7 @@ def build_dashboard_header(title: str, subtitle: str, selected_date: date) -> ht
                                 min=MIN_SELECTABLE_DATE.isoformat(),
                                 max=MAX_SELECTABLE_DATE.isoformat(),
                                 className="dashboard-date-input",
+                                disabled=True,
                             ),
                         ],
                     ),
